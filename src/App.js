@@ -44,36 +44,42 @@ export class MapApp extends Component {
     // }
 
   render() {
-    const style = { width: '100vw', height: '100vh' };
+    const style = { width: '100%', height: '100%' };
     return (
-      <Map
-        google={this.props.google}
-        style={style}
-        styles={mapStyle}
-        initialCenter={{
-          lat: 53.4631,
-          lng: -2.29139
-        }}
-        zoom={15}
-        onClick={this.onMapClicked}
-      >
-        <Marker onClick={this.onMarkerClick} name={'Current location'} />
+      <div>
+        <header className='header-bar'>
+          <h1>Manchester United Map</h1>
+        </header>
+        <aside className='right-section'>
+            {this.state.items.map(item => { return <a key={item.id}>{item.name}</a> })}
+        </aside>
 
-        
-        <Marker onClick={this.onMarkerClick} name={'Current location'} />
+        <div className='map-canvas'>
+          <Map
+            google={this.props.google}
+            style={style}
+            styles={mapStyle}
+            initialCenter={{
+              lat: 53.4631,
+              lng: -2.29139
+            }}
+            zoom={15}
+            onClick={this.onMapClicked}
+          >
+            <Marker onClick={this.onMarkerClick} name={'Current location'} />
 
-        <InfoWindow onClose={this.onInfoWindowClose}>
-          <div>
-            {/* <h1>{this.state.selectedPlace.name}</h1> */}
-            <h1>unknown</h1>
-          </div>
-        </InfoWindow>
-        <div>
-          <div>Items:</div>
-          {this.state.items.map(item => { return <div key={item.id}>{item.name}</div> })}
+            
+            <Marker onClick={this.onMarkerClick} name={'Current location'} />
+
+            <InfoWindow onClose={this.onInfoWindowClose}>
+              <div>
+                {/* <h1>{this.state.selectedPlace.name}</h1> */}
+                <h1>unknown</h1>
+              </div>
+            </InfoWindow>
+          </Map>
         </div>
-
-      </Map>
+      </div>
 
     );
   }
