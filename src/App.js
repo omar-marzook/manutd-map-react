@@ -11,20 +11,19 @@ const foursquare = require("react-foursquare")({
 const params = {
   ll: "53.4631,-2.29139",
   query: "Manchester United",
-  limit: "5"
+  limit: "6"
 };
 
 export class MapApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-       items: [] 
-      };
+      items: []
+    };
   }
 
   componentDidMount() {
-    foursquare.venues.getVenues(params)
-    .then(res => {
+    foursquare.venues.getVenues(params).then(res => {
       this.setState({ items: res.response.venues });
     });
   }
@@ -54,7 +53,7 @@ export class MapApp extends Component {
           {this.state.items.map(item => {
             return (
               <a key={item.id}>
-                {item.name} {item.location.lat} {item.location.lng}
+                {item.name}
               </a>
             );
           })}
@@ -66,12 +65,18 @@ export class MapApp extends Component {
             style={style}
             styles={mapStyle}
             initialCenter={{ lat: 53.4631, lng: -2.29139 }}
-            zoom={15}
+            zoom={16}
             onClick={this.onMapClicked}
           >
-            <Marker onClick={this.onMarkerClick} name={"Current location"} />
-
-            <Marker onClick={this.onMarkerClick} name={"Current location"} />
+            {this.state.items.map(item => {
+              return (
+                <Marker
+                  name={item.name}
+                  position={{ lat: item.location.lat, lng: item.location.lng }}
+                  onClick={this.onMarkerClick}
+                />
+              );
+            })}
 
             <InfoWindow onClose={this.onInfoWindowClose}>
               <div>
