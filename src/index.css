@@ -43,7 +43,7 @@ body {
 .right-section a:focus {
     color: #e6e600;
     border-bottom: 1px solid #cc1818;
-    text-shadow: 1px 1px 1px red;
+    text-shadow: 1px 1px 1px #cc1818;
 }
 
 .map-canvas {
