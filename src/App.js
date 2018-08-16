@@ -46,19 +46,13 @@ export class MapApp extends Component {
       })
     }
   };
-  // componentDidMount() {
-  //   fetch('https://api.foursquare.com/v2/users/510483378/list/manutdmapreact')
-  //     .then(response => response.json())
-  //     .then((data) => {
-  //       this.setState({
-  //         venues: data.response.venues
-  //       })
-  //     })
-  //     .catch((error) => {
-  //       alert('Error getting data from the FourSquare API. Check the key.')
-  //       console.log('Error getting data from the FourSquare API. Check the key.')
-  //     })
-  // }
+
+  onListClick = (props, marker, e) =>
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true
+    });
 
   render() {
     const style = { width: "100%", height: "100%" };
@@ -69,11 +63,9 @@ export class MapApp extends Component {
         </header>
         <aside className="right-section">
           {this.state.items.map(item => {
-            return (
-              <a key={item.id}>
+            return <a key={item.id} onClick={this.onListClick}>
                 {item.name}
-              </a>
-            );
+              </a>;
           })}
         </aside>
 
@@ -91,6 +83,7 @@ export class MapApp extends Component {
                 <Marker
                   name={item.name}
                   position={{ lat: item.location.lat, lng: item.location.lng }}
+                  animation = { this.props.google.maps.Animation.DROP }
                   onClick={this.onMarkerClick}
                 />
               );
@@ -116,3 +109,17 @@ export default GoogleApiWrapper({
 })(MapApp);
 
 //res.response.venues[1].location.lat
+
+// componentDidMount() {
+//   fetch('https://api.foursquare.com/v2/users/510483378/list/manutdmapreact')
+//     .then(response => response.json())
+//     .then((data) => {
+//       this.setState({
+//         venues: data.response.venues
+//       })
+//     })
+//     .catch((error) => {
+//       alert('Error getting data from the FourSquare API. Check the key.')
+//       console.log('Error getting data from the FourSquare API. Check the key.')
+//     })
+// }
