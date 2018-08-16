@@ -18,7 +18,10 @@ export class MapApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: []
+      items: [],
+      showingInfoWindow: false,
+      activeMarker: {},
+      selectedPlace: {}
     };
   }
 
@@ -28,6 +31,21 @@ export class MapApp extends Component {
     });
   }
 
+  onMarkerClick = (props, marker, e) =>
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true
+    });
+
+  onMapClicked = (props) => {
+    if (this.state.showingInfoWindow) {
+      this.setState({
+        showingInfoWindow: false,
+        activeMarker: null
+      })
+    }
+  };
   // componentDidMount() {
   //   fetch('https://api.foursquare.com/v2/users/510483378/list/manutdmapreact')
   //     .then(response => response.json())
@@ -78,10 +96,11 @@ export class MapApp extends Component {
               );
             })}
 
-            <InfoWindow onClose={this.onInfoWindowClose}>
+            <InfoWindow
+              marker={this.state.activeMarker}
+              visible={this.state.showingInfoWindow}>
               <div>
-                {/* <h1>{this.state.selectedPlace.name}</h1> */}
-                <h1>unknown</h1>
+                <h3>{this.state.selectedPlace.name}</h3>
               </div>
             </InfoWindow>
           </Map>
