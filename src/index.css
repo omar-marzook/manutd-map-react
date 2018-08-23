@@ -36,14 +36,16 @@ body {
 
 .nav-section a {
     display: block;
-    padding: 10px 20px;
+    padding: 5px 20px;
+    text-decoration: none;
 }
 
 .nav-section a:hover,
 .nav-section a:focus {
     color: #e6e600;
-    border-bottom: 1px solid #cc1818;
+    /* border-bottom: 1px solid #cc1818; */
     text-shadow: 1px 1px 1px #cc1818;
+    cursor: pointer;
 }
 
 .map-canvas {
@@ -55,4 +57,15 @@ body {
     height: 88%;
     border-top: 1px solid #cc1818;
     border-left: 1px solid #cc1818;
+}
+
+.search-label {
+    padding: 10px 20px;
+}
+
+#search {
+    height: 40px;
+    width: calc(100% - 60px);
+    padding: 0 0 0 10px;
+    margin-bottom: 20px;
 }

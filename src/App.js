@@ -64,60 +64,37 @@ export class MapApp extends Component {
 
   render() {
     const style = { width: "100%", height: "100%" };
-    return (
-      <div>
+    return <div>
         <header className="header-bar">
           <h1>Manchester United Map</h1>
         </header>
         <aside className="nav-section">
-          {this.state.items.map(item => {
-            return (
-              <a key={item.id} onClick={e => this.onListClick(e.target)}>
-                {item.name}
-              </a>
-            );
-          })}
+          <label className="search-label" htmlFor="search">
+            <input id="search" onKeyUp={this.filterList} type="text" placeholder="Search Location" />
+          </label>
+          <nav className="location-list">
+            {this.state.items.map(item => {
+              return <a className="nav-item" key={item.id} onClick={e => this.onListClick(e.target)}>
+                  {item.name}
+                </a>;
+            })}
+          </nav>
         </aside>
 
         <div className="map-canvas">
-          <Map
-            google={this.props.google}
-            style={style}
-            styles={mapStyle}
-            initialCenter={{ lat: 53.4631, lng: -2.29139 }}
-            zoom={16}
-            onClick={this.onMapClicked}
-          >
+          <Map google={this.props.google} style={style} styles={mapStyle} initialCenter={{ lat: 53.4631, lng: -2.29139 }} zoom={16} onClick={this.onMapClicked}>
             {this.state.items.map(item => {
-              return (
-                <Marker
-                  name={item.name}
-                  title={item.name}
-                  position={{ lat: item.location.lat, lng: item.location.lng }}
-                  animation={
-                    this.state.activeMarker
-                      ? this.state.activeMarker.name == item.name
-                        ? "1"
-                        : "0"
-                      : "0"
-                  }
-                  onClick={this.onMarkerClick}
-                />
-              );
+              return <Marker name={item.name} title={item.name} position={{ lat: item.location.lat, lng: item.location.lng }} animation={this.state.activeMarker ? (this.state.activeMarker.name == item.name ? "1" : "0") : "0"} onClick={this.onMarkerClick} />;
             })}
 
-            <InfoWindow
-              marker={this.state.activeMarker}
-              visible={this.state.showingInfoWindow}
-            >
+            <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow}>
               <div>
                 <h3>{this.state.selectedPlace.name}</h3>
               </div>
             </InfoWindow>
           </Map>
         </div>
-      </div>
-    );
+      </div>;
   }
 }
 
