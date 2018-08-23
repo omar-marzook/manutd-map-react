@@ -21,7 +21,7 @@ body {
     font-weight: 500;
 }
 
-.right-section {
+.nav-section {
     display: inline-block;
     position: absolute;
     width: 20%;
@@ -34,13 +34,13 @@ body {
     padding-top: 20px;
 }
 
-.right-section a {
+.nav-section a {
     display: block;
     padding: 10px 20px;
 }
 
-.right-section a:hover,
-.right-section a:focus {
+.nav-section a:hover,
+.nav-section a:focus {
     color: #e6e600;
     border-bottom: 1px solid #cc1818;
     text-shadow: 1px 1px 1px #cc1818;
