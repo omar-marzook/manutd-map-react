@@ -26,33 +26,41 @@ export class MapApp extends Component {
   }
 
   componentDidMount() {
-    foursquare.venues.getVenues(params).then(res => {
-      this.setState({ items: res.response.venues });
-    });
+    foursquare.venues
+      .getVenues(params)
+      .then(res => {
+        this.setState({ items: res.response.venues });
+      })
+      .catch(error => {
+        console.log("Error! " + error);
+      });
+
+    window.gm_authFailure = () => {
+      console.log("Error loading Google Maps!");
+    };
   }
 
-  onMarkerClick = (props, marker, e) =>
+  onMarkerClick = (props, marker) =>
     this.setState({
       selectedPlace: props,
       activeMarker: marker,
       showingInfoWindow: true
     });
 
-  onMapClicked = (props) => {
+  onMapClicked = props => {
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
         activeMarker: null
-      })
+      });
     }
   };
 
-  onListClick = (props, marker, e) =>
-    this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true
-    });
+  onListClick = e => {
+    const markers = [...document.querySelectorAll(".gmnoprint map area")];
+    const click = markers.find(marker => marker.title == e.innerText);
+    click.click();
+  };
 
   render() {
     const style = { width: "100%", height: "100%" };
@@ -61,11 +69,13 @@ export class MapApp extends Component {
         <header className="header-bar">
           <h1>Manchester United Map</h1>
         </header>
-        <aside className="right-section">
+        <aside className="nav-section">
           {this.state.items.map(item => {
-            return <a key={item.id} onClick={this.onListClick}>
+            return (
+              <a key={item.id} onClick={e => this.onListClick(e.target)}>
                 {item.name}
-              </a>;
+              </a>
+            );
           })}
         </aside>
 
@@ -82,8 +92,15 @@ export class MapApp extends Component {
               return (
                 <Marker
                   name={item.name}
+                  title={item.name}
                   position={{ lat: item.location.lat, lng: item.location.lng }}
-                  animation = { this.props.google.maps.Animation.DROP }
+                  animation={
+                    this.state.activeMarker
+                      ? this.state.activeMarker.name == item.name
+                        ? "1"
+                        : "0"
+                      : "0"
+                  }
                   onClick={this.onMarkerClick}
                 />
               );
@@ -91,7 +108,8 @@ export class MapApp extends Component {
 
             <InfoWindow
               marker={this.state.activeMarker}
-              visible={this.state.showingInfoWindow}>
+              visible={this.state.showingInfoWindow}
+            >
               <div>
                 <h3>{this.state.selectedPlace.name}</h3>
               </div>
