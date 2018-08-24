@@ -173,7 +173,7 @@ export class MapApp extends Component {
                   role="listitem"
                   onClick={e => this.onListClick(e.target)}
                 >
-                  * {item.name}
+                  {item.name}
                 </a>
               );
             })}
