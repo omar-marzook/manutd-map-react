@@ -41,6 +41,7 @@ body {
     display: block;
     padding: 5px 20px;
     text-decoration: none;
+    margin: 20px 0;
 }
 
 .nav-section a:hover,
@@ -55,8 +56,8 @@ body {
     display: inline-block;
     position: absolute;
     left: 20%;
-    top: 12%;
     width: 80%;
+    top: 12%;
     height: 88%;
     border-top: 1px solid #cc1818;
     border-left: 1px solid #cc1818;
@@ -75,6 +76,7 @@ body {
 }
 
 .buttonNav {
+    visibility: hidden;
     background-color: #1a1a1a;
     display: -ms-flexbox;
     display: flex;
@@ -104,7 +106,21 @@ body {
     background: #343434;
 }
 
+@media (max-width: 1024px) {
+    .nav-section {
+        width: 30%;
+    }
+
+    .map-canvas {
+        left: 30%;
+        width: 70%;
+    }
+}
+
 @media (max-width: 800px) {
+    .buttonNav {
+        visibility: visible;
+    }
     .nav-section {
         visibility: hidden;
         left: -20%;
@@ -122,16 +138,83 @@ body {
     }
 }
 
-@media (max-width: 475px) {
+@media (max-width: 680px) {
+    .nav-section {
+        width: 30%;
+    }
+
+    .map-canvas {
+        left: 30%;
+        width: 70%;
+    }
+
     .header-bar h1 {
         font-size: 30px;
         font-weight: 700;
     }
+
+    .buttonNav {
+        margin-left: 40px
+    }
+
+    .nav-section {
+        width: 40%;
+    }
+
+    .map-canvas {
+        left: 40%;
+        width: 60%;
+    }
 }
 
-@media (max-width: 359px) {
+@media (max-width: 480px) {
     .header-bar h1 {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 700;
+    }
+
+    .toggleButton span {
+        width: 18px;
+        display: block;
+        margin: 5px 8px;
+        height: 3px;
+        background: #cc1818;
+    }
+
+    .toggleButton {
+        border: 3px solid #cc1818;
+        padding: 2px;
+    }
+
+    .buttonNav {
+        margin-left: 20px;
+    }
+
+    .map-canvas {
+        left: 60%;
+        width: 40%;
+    }
+
+    .nav-section {
+        width: 60%;
+    }
+}
+
+@media (max-width: 360px) {
+    .header-bar h1 {
+        font-size: 16px;
+        font-weight: 700;
+    }
+    .map-canvas {
+        left: 70%;
+        width: 30%;
+    }
+
+    .nav-section {
+        width: 70%;
+    }
+
+    .nav-section a {
+        margin: 0;
     }
 }
