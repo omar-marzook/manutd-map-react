@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import "./index.css";
+import classnames from "classnames";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import "./index.css";
 import mapStyle from "./map-style.json";
 
 const foursquare = require("react-foursquare")({
@@ -23,9 +24,19 @@ export class MapApp extends Component {
       activeMarker: {},
       selectedPlace: {},
       query: "",
-      markers: []
+      markers: [],
+      active: false,
+      full: true
     };
   }
+
+  toggleMenu = () => {
+    if (this.state.active === false && this.state.full === true) {
+      this.setState({ active: true, full: false });
+    } else {
+      this.setState({ active: false, full: true });
+    }
+  };
 
   componentDidMount() {
     foursquare.venues
@@ -98,12 +109,27 @@ export class MapApp extends Component {
 
   render() {
     const style = { width: "100%", height: "100%" };
+    let activeClass = classnames("nav-section ", { active: this.state.active });
+    let fullClass = classnames("map-canvas ", { full: this.state.full });
+
     return (
       <div>
         <header className="header-bar">
+          {/* Burger Menu */}
+          <div className="buttonNav">
+            <button
+              className={"toggleButton"}
+              onClick={this.toggleMenu.bind(this)}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
           <h1>Manchester United Map</h1>
         </header>
-        <aside className="nav-section">
+
+        <aside className={activeClass}>
           <label className="search-label" htmlFor="search">
             <input
               id="search"
@@ -113,6 +139,7 @@ export class MapApp extends Component {
               onChange={this.filterList}
             />
           </label>
+
           <nav className="location-list">
             {this.state.items.map(item => {
               return (
@@ -128,7 +155,7 @@ export class MapApp extends Component {
           </nav>
         </aside>
 
-        <div className="map-canvas">
+        <div className={fullClass}>
           <Map
             google={this.props.google}
             style={style}
