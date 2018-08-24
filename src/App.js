@@ -26,15 +26,20 @@ export class MapApp extends Component {
       query: "",
       markers: [],
       active: false,
-      full: true
+      full: true,
+      ariaExpanded: false
     };
   }
 
   toggleMenu = () => {
-    if (this.state.active === false && this.state.full === true) {
-      this.setState({ active: true, full: false });
+    if (
+      this.state.active === false &&
+      this.state.full === true &&
+      this.state.ariaExpanded === false
+    ) {
+      this.setState({ active: true, full: false, ariaExpanded: true });
     } else {
-      this.setState({ active: false, full: true });
+      this.setState({ active: false, full: true, ariaExpanded: false });
     }
   };
 
@@ -114,18 +119,20 @@ export class MapApp extends Component {
 
     return (
       <div>
-        <header className="header-bar">
+        <header className="header-bar" role="banner">
           {/* Burger Menu */}
-          <div className="buttonNav">
+          <nav className="buttonNav" role="presentation">
             <button
               className={"toggleButton"}
+              aria-controls="menu"
+              aria-expanded={this.state.ariaExpanded}
               onClick={this.toggleMenu.bind(this)}
             >
               <span />
               <span />
               <span />
             </button>
-          </div>
+          </nav>
 
           <h1>Manchester United Map</h1>
         </header>
@@ -135,28 +142,31 @@ export class MapApp extends Component {
             <input
               id="search"
               type="text"
+              name="search"
+              aria-label="Search"
               placeholder="Search Location"
               value={this.state.value}
               onChange={this.filterList}
             />
           </label>
 
-          <nav className="location-list">
+          <nav className="location-list" role="navigation">
             {this.state.items.map(item => {
               return (
                 <a
                   className="nav-item"
                   key={item.id}
+                  tabIndex="0"
                   onClick={e => this.onListClick(e.target)}
-                > *
-                  {item.name}
+                >
+                  * {item.name}
                 </a>
               );
             })}
           </nav>
         </aside>
 
-        <div className={fullClass}>
+        <div className={fullClass} aria-label="Google Map" aria-hidden="true">
           <Map
             google={this.props.google}
             style={style}
