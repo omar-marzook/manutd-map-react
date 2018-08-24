@@ -21,7 +21,9 @@ export class MapApp extends Component {
       items: [],
       showingInfoWindow: false,
       activeMarker: {},
-      selectedPlace: {}
+      selectedPlace: {},
+      query: "",
+      markers: []
     };
   }
 
@@ -57,44 +59,116 @@ export class MapApp extends Component {
   };
 
   onListClick = e => {
-    const markers = [...document.querySelectorAll(".gmnoprint map area")];
-    const click = markers.find(marker => marker.title == e.innerText);
+    let markers = [...document.querySelectorAll(".gmnoprint map area")];
+    this.setState({ markers: markers });
+    const click = markers.find(marker => marker.title === e.innerText);
     click.click();
+  };
+
+  filterList = () => {
+    let input, inputVal, a, i, filtered, markerPin, filteredPin, filteredMarker;
+    input = document.querySelector("#search");
+    inputVal = input.value.toLowerCase();
+    a = document.querySelectorAll(".nav-item");
+    markerPin = document.querySelectorAll(".marker-pin");
+
+    for (i = 0; i < a.length; i++) {
+      filtered = a[i];
+      filteredPin = markerPin[i];
+      filteredMarker = this.state.markers[i];
+
+      if (filtered.innerHTML.toLowerCase().indexOf(inputVal) > -1) {
+        filtered.style.display = "";
+        // filteredMarker.setVisible(true);
+      } else {
+        filtered.style.display = "none";
+        // filteredMarker.setVisible(false);
+        this.state.items.splice(i, 1);
+      }
+
+      // if (
+      //   filtered.innerHTML.toLowerCase().indexOf(inputVal) > -1
+      // ) {
+      //   this.state.items.splice(i, 1);
+      // }
+      // console.log(a[i]);
+      // console.log(this.state.items);
+    }
   };
 
   render() {
     const style = { width: "100%", height: "100%" };
-    return <div>
+    return (
+      <div>
         <header className="header-bar">
           <h1>Manchester United Map</h1>
         </header>
         <aside className="nav-section">
           <label className="search-label" htmlFor="search">
-            <input id="search" onKeyUp={this.filterList} type="text" placeholder="Search Location" />
+            <input
+              id="search"
+              type="text"
+              placeholder="Search Location"
+              value={this.state.value}
+              onChange={this.filterList}
+            />
           </label>
           <nav className="location-list">
             {this.state.items.map(item => {
-              return <a className="nav-item" key={item.id} onClick={e => this.onListClick(e.target)}>
+              return (
+                <a
+                  className="nav-item"
+                  key={item.id}
+                  onClick={e => this.onListClick(e.target)}
+                >
                   {item.name}
-                </a>;
+                </a>
+              );
             })}
           </nav>
         </aside>
 
         <div className="map-canvas">
-          <Map google={this.props.google} style={style} styles={mapStyle} initialCenter={{ lat: 53.4631, lng: -2.29139 }} zoom={16} onClick={this.onMapClicked}>
+          <Map
+            google={this.props.google}
+            style={style}
+            styles={mapStyle}
+            initialCenter={{ lat: 53.4631, lng: -2.29139 }}
+            zoom={16}
+            onClick={this.onMapClicked}
+          >
             {this.state.items.map(item => {
-              return <Marker name={item.name} title={item.name} position={{ lat: item.location.lat, lng: item.location.lng }} animation={this.state.activeMarker ? (this.state.activeMarker.name == item.name ? "1" : "0") : "0"} onClick={this.onMarkerClick} />;
+              return (
+                <Marker
+                  name={item.name}
+                  title={item.name}
+                  key={item.name}
+                  className="marker-pin"
+                  position={{ lat: item.location.lat, lng: item.location.lng }}
+                  animation={
+                    this.state.activeMarker
+                      ? this.state.activeMarker.name === item.name
+                        ? "1"
+                        : "0"
+                      : "0"
+                  }
+                  onClick={this.onMarkerClick}
+                />
+              );
             })}
 
-            <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow}>
+            <InfoWindow
+              marker={this.state.activeMarker}
+              visible={this.state.showingInfoWindow}
+            >
               <div>
                 <h3>{this.state.selectedPlace.name}</h3>
               </div>
             </InfoWindow>
           </Map>
         </div>
-      </div>;
+      </div>
+    );
   }
 }
 
@@ -102,19 +176,3 @@ export default GoogleApiWrapper({
   apiKey: "AIzaSyDr2mpFQ0YiKrf8bW71BurYN_QIl6uylys",
   v: "3.30"
 })(MapApp);
-
-//res.response.venues[1].location.lat
-
-// componentDidMount() {
-//   fetch('https://api.foursquare.com/v2/users/510483378/list/manutdmapreact')
-//     .then(response => response.json())
-//     .then((data) => {
-//       this.setState({
-//         venues: data.response.venues
-//       })
-//     })
-//     .catch((error) => {
-//       alert('Error getting data from the FourSquare API. Check the key.')
-//       console.log('Error getting data from the FourSquare API. Check the key.')
-//     })
-// }
