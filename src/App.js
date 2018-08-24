@@ -37,9 +37,17 @@ export class MapApp extends Component {
       this.state.full === true &&
       this.state.ariaExpanded === false
     ) {
-      this.setState({ active: true, full: false, ariaExpanded: true });
+      this.setState({
+        active: true,
+        full: false,
+        ariaExpanded: true
+      });
     } else {
-      this.setState({ active: false, full: true, ariaExpanded: false });
+      this.setState({
+        active: false,
+        full: true,
+        ariaExpanded: false
+      });
     }
   };
 
@@ -76,6 +84,7 @@ export class MapApp extends Component {
 
   onListClick = e => {
     let markers = [...document.querySelectorAll(".gmnoprint map area")];
+    // let markers = [...document.querySelectorAll(".gmnoprint")];
     this.setState({ markers: markers });
     const click = markers.find(marker => marker.title === e.innerText);
     click.click();
@@ -114,8 +123,12 @@ export class MapApp extends Component {
 
   render() {
     const style = { width: "100%", height: "100%" };
-    let activeClass = classnames("nav-section ", { active: this.state.active });
-    let fullClass = classnames("map-canvas ", { full: this.state.full });
+    let activeClass = classnames("nav-section ", {
+      active: this.state.active
+    });
+    let fullClass = classnames("map-canvas ", {
+      full: this.state.full
+    });
 
     return (
       <div>
@@ -150,13 +163,14 @@ export class MapApp extends Component {
             />
           </label>
 
-          <nav className="location-list" role="navigation">
+          <nav className="location-list" role="list">
             {this.state.items.map(item => {
               return (
                 <a
                   className="nav-item"
                   key={item.id}
                   tabIndex="0"
+                  role="listitem"
                   onClick={e => this.onListClick(e.target)}
                 >
                   * {item.name}
