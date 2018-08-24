@@ -94,7 +94,7 @@ export class MapApp extends Component {
       } else {
         filtered.style.display = "none";
         // filteredMarker.setVisible(false);
-        this.state.items.splice(i, 1);
+        // this.state.items.splice(i, 1);
       }
 
       // if (
@@ -126,6 +126,7 @@ export class MapApp extends Component {
               <span />
             </button>
           </div>
+
           <h1>Manchester United Map</h1>
         </header>
 
@@ -147,7 +148,7 @@ export class MapApp extends Component {
                   className="nav-item"
                   key={item.id}
                   onClick={e => this.onListClick(e.target)}
-                >
+                > *
                   {item.name}
                 </a>
               );
@@ -189,7 +190,7 @@ export class MapApp extends Component {
               visible={this.state.showingInfoWindow}
             >
               <div>
-                <h3>{this.state.selectedPlace.name}</h3>
+                <h4>{this.state.selectedPlace.name}</h4>
               </div>
             </InfoWindow>
           </Map>
