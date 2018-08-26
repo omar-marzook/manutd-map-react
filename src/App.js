@@ -112,7 +112,7 @@ export class MapApp extends Component {
 
   // Search filtering locations
   filterList = () => {
-    let input, inputVal, a, i, filtered, markerPin, filteredPin, filteredMarker;
+    let input, inputVal, a, i, filtered, markerPin;
     input = document.querySelector("#search");
     inputVal = input.value.toLowerCase();
     a = document.querySelectorAll(".nav-item");
@@ -125,25 +125,15 @@ export class MapApp extends Component {
 
       if (filtered.innerHTML.toLowerCase().indexOf(inputVal) > -1) {
         filtered.style.display = "";
-        // filteredMarker.setVisible(true);
       } else {
         filtered.style.display = "none";
-        // filteredMarker.setVisible(false);
-        // this.state.items.splice(i, 1);
       }
-
-      // if (
-      //   filtered.innerHTML.toLowerCase().indexOf(inputVal) > -1
-      // ) {
-      //   this.state.items.splice(i, 1);
-      // }
-      // console.log(a[i]);
-      // console.log(this.state.items);
     }
   };
 
   render() {
     const style = { width: "100%", height: "100%" };
+    
     // `classList.toggle` showed Errors so Used 'classnames' to handle it
     let activeClass = classnames("nav-section ", {
       active: this.state.active
