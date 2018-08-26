@@ -9,7 +9,7 @@ The App shows some of **Manchester United** venus marked on the Map with InfoWin
 * Using a terminal:
  `npm install`
  `npm start`
-* To run in production mode
+* To run in production mode using a terminal:
 `npm run build`
 `serve -s build`
 Then navigate to http://localhost:5000

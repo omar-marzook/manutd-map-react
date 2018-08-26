@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import classnames from "classnames";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
 import "./index.css";
+import SideBar from "./Sidebar.js";
 import mapStyle from "./map-style.json";
 
 export class MapApp extends Component {
@@ -151,17 +152,11 @@ export class MapApp extends Component {
       full: this.state.full
     });
 
-    return (
-      <div>
+    return <div>
         <header className="header-bar" role="banner">
           {/* Burger Menu */}
           <nav className="buttonNav" role="presentation">
-            <button
-              className={"toggleButton"}
-              aria-controls="menu"
-              aria-expanded={this.state.ariaExpanded}
-              onClick={this.toggleMenu.bind(this)}
-            >
+            <button className={"toggleButton"} aria-controls="menu" aria-expanded={this.state.ariaExpanded} onClick={this.toggleMenu.bind(this)}>
               <span />
               <span />
               <span />
@@ -171,79 +166,16 @@ export class MapApp extends Component {
           <h1>Manchester United Map</h1>
         </header>
 
-        <aside className={activeClass}>
-          <label className="search-label" htmlFor="search">
-            Search Locations: <br />
-            <input
-              id="search"
-              type="text"
-              name="search"
-              aria-label="Search"
-              placeholder="Search Location"
-              value={this.state.value}
-              onChange={this.filterList}
-            />
-          </label>
-
-          <nav className="location-list">
-            <ul>
-              {this.state.items.map(item => {
-                return (
-                  <li key={item.venue.id}>
-                    <a
-                      className="nav-item"
-                      tabIndex="0"
-                      role="button"
-                      onClick={e => this.onListClick(e.target)}
-                    >
-                      {item.venue.name}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        </aside>
+        <SideBar items={this.state.items} onListClick={this.onListClick} filterList={this.filterList} activeClass={activeClass} />
 
         <div className={fullClass} aria-label="Google Map" aria-hidden="true">
-          <Map
-            google={this.props.google}
-            style={style}
-            styles={mapStyle}
-            initialCenter={{ lat: 53.4631, lng: -2.29139 }}
-            zoom={16}
-            onClick={this.onMapClicked}
-            role="application"
-          >
-            {/* Create Location List Markers from fetched API data */}
+          <Map google={this.props.google} style={style} styles={mapStyle} initialCenter={{ lat: 53.4631, lng: -2.29139 }} zoom={16} onClick={this.onMapClicked} role="application">
+            {/* Create Location List of Markers from fetching API data */}
             {this.state.items.map(item => {
-              return (
-                <Marker
-                  name={item.venue.name}
-                  title={item.venue.name}
-                  key={item.venue.name}
-                  address={item.venue.location.formattedAddress}
-                  className="marker-pin"
-                  position={{
-                    lat: item.venue.location.lat,
-                    lng: item.venue.location.lng
-                  }}
-                  animation={
-                    this.state.activeMarker
-                      ? this.state.activeMarker.name === item.venue.name
-                        ? "1"
-                        : "0"
-                      : "0"
-                  }
-                  onClick={this.onMarkerClick}
-                />
-              );
+              return <Marker name={item.venue.name} title={item.venue.name} key={item.venue.name} address={item.venue.location.formattedAddress} className="marker-pin" position={{ lat: item.venue.location.lat, lng: item.venue.location.lng }} animation={this.state.activeMarker ? (this.state.activeMarker.name === item.venue.name ? "1" : "0") : "0"} onClick={this.onMarkerClick} />;
             })}
 
-            <InfoWindow
-              marker={this.state.activeMarker}
-              visible={this.state.showingInfoWindow}
-            >
+            <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow}>
               <div>
                 <h4>{this.state.selectedPlace.name}</h4>
                 <p>{this.state.selectedPlace.address}</p>
@@ -251,8 +183,7 @@ export class MapApp extends Component {
             </InfoWindow>
           </Map>
         </div>
-      </div>
-    );
+      </div>;
   }
 }
 
