@@ -93,8 +93,17 @@ export class MapApp extends Component {
 
   // When Click On Side Nav Location
   onListClick = e => {
-    let markers = [...document.querySelectorAll(".gmnoprint map area")];
-    // let markers = [...document.querySelectorAll(".gmnoprint")];
+    let markers;
+
+    // `.gmnoprint` works fine on touch screens & `.gmnoprint map area` works fine on Desktop
+    (() => {
+      if (window.matchMedia("(max-width: 1024px)").matches) {
+        markers = [...document.querySelectorAll(".gmnoprint")];
+      } else {
+        markers = [...document.querySelectorAll(".gmnoprint map area")];
+      }
+    })();
+
     this.setState({ markers: markers });
     const click = markers.find(marker => marker.title === e.innerText);
     click.click();
