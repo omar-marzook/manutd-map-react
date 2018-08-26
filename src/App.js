@@ -112,16 +112,13 @@ export class MapApp extends Component {
 
   // Search filtering locations
   filterList = () => {
-    let input, inputVal, a, i, filtered, markerPin;
+    let input, inputVal, a, i, filtered;
     input = document.querySelector("#search");
     inputVal = input.value.toLowerCase();
     a = document.querySelectorAll(".nav-item");
-    markerPin = document.querySelectorAll(".marker-pin");
 
     for (i = 0; i < a.length; i++) {
       filtered = a[i];
-      filteredPin = markerPin[i];
-      filteredMarker = this.state.markers[i];
 
       if (filtered.innerHTML.toLowerCase().indexOf(inputVal) > -1) {
         filtered.style.display = "";
@@ -133,7 +130,6 @@ export class MapApp extends Component {
 
   render() {
     const style = { width: "100%", height: "100%" };
-    
     // `classList.toggle` showed Errors so Used 'classnames' to handle it
     let activeClass = classnames("nav-section ", {
       active: this.state.active
