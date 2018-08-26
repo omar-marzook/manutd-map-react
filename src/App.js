@@ -4,17 +4,6 @@ import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
 import "./index.css";
 import mapStyle from "./map-style.json";
 
-const foursquare = require("react-foursquare")({
-  clientID: "GOCZGJUBBXCSCUFF4QTUIH0FTXP35RXALJOFHL22DHVBGR5Q",
-  clientSecret: "WKSOXP1FDMQI2V4P552VEVYO2XBPKQVKA114NUYFTBFWXH2P"
-});
-
-const params = {
-  ll: "53.4631,-2.29139",
-  query: "Manchester United",
-  limit: "6"
-};
-
 export class MapApp extends Component {
   constructor(props) {
     super(props);
@@ -52,17 +41,30 @@ export class MapApp extends Component {
   };
 
   componentDidMount() {
-    foursquare.venues
-      .getVenues(params)
-      .then(res => {
-        this.setState({ items: res.response.venues });
+    fetch(
+      "https://api.foursquare.com/v2/venues/explore?client_id=GOCZGJUBBXCSCUFF4QTUIH0FTXP35RXALJOFHL22DHVBGR5Q&client_secret=WKSOXP1FDMQI2V4P552VEVYO2XBPKQVKA114NUYFTBFWXH2P&v=20180323&limit=6&ll=53.4631,-2.291398&query=Manchester United",
+      {
+        method: "GET"
+      }
+    )
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("FourSquare API can't load");
+        }
       })
-      .catch(error => {
-        console.log("Error! " + error);
-      });
+      .then(res => {
+        console.log(res);
+        this.setState({
+          items: res.response.groups[0].items
+        });
+        console.log(this.state.items);
+      })
+      .catch(error => console.log("Error! " + error));
 
     window.gm_authFailure = () => {
-      console.log("Error loading Google Maps!");
+      alert("Error loading Google Maps!");
     };
   }
 
@@ -168,12 +170,12 @@ export class MapApp extends Component {
               return (
                 <a
                   className="nav-item"
-                  key={item.id}
+                  key={item.venue.id}
                   tabIndex="0"
                   role="listitem"
                   onClick={e => this.onListClick(e.target)}
                 >
-                  {item.name}
+                  {item.venue.name}
                 </a>
               );
             })}
@@ -192,14 +194,18 @@ export class MapApp extends Component {
             {this.state.items.map(item => {
               return (
                 <Marker
-                  name={item.name}
-                  title={item.name}
-                  key={item.name}
+                  name={item.venue.name}
+                  title={item.venue.name}
+                  key={item.venue.name}
+                  address={item.venue.location.formattedAddress}
                   className="marker-pin"
-                  position={{ lat: item.location.lat, lng: item.location.lng }}
+                  position={{
+                    lat: item.venue.location.lat,
+                    lng: item.venue.location.lng
+                  }}
                   animation={
                     this.state.activeMarker
-                      ? this.state.activeMarker.name === item.name
+                      ? this.state.activeMarker.name === item.venue.name
                         ? "1"
                         : "0"
                       : "0"
@@ -215,6 +221,7 @@ export class MapApp extends Component {
             >
               <div>
                 <h4>{this.state.selectedPlace.name}</h4>
+                <p>{this.state.selectedPlace.address}</p>
               </div>
             </InfoWindow>
           </Map>

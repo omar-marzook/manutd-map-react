@@ -106,7 +106,7 @@ body {
     background: #343434;
 }
 
-@media (max-width: 1024px) {
+@media only screen and (max-width: 1024px) {
     .nav-section {
         width: 30%;
     }
@@ -116,7 +116,7 @@ body {
     }
 }
 
-@media (max-width: 800px) {
+@media only screen and (max-width: 800px) {
     .buttonNav {
         visibility: visible;
     }
@@ -137,7 +137,7 @@ body {
     }
 }
 
-@media (max-width: 680px) {
+@media only screen and (max-width: 680px) {
     .nav-section {
         width: 30%;
     }
@@ -161,7 +161,7 @@ body {
     }
 }
 
-@media (max-width: 480px) {
+@media only screen and (max-width: 480px) {
     .header-bar h1 {
         font-size: 22px;
         font-weight: 700;
@@ -189,7 +189,7 @@ body {
     }
 }
 
-@media (max-width: 360px) {
+@media only screen and (max-width: 360px) {
     .header-bar h1 {
         font-size: 16px;
         font-weight: 700;
