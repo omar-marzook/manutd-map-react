@@ -5,6 +5,11 @@ body {
     overflow: hidden;
 }
 
+ul {
+    list-style: none;
+    padding: 0;
+}
+
 .header-bar {
     height: 12%;
     position: absolute;
@@ -66,6 +71,11 @@ body {
 
 .search-label {
     padding: 10px 20px;
+    font-weight: 700;
+}
+
+.search-label input {
+    margin: 10px 20px;
 }
 
 #search {
