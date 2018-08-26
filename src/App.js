@@ -154,6 +154,7 @@ export class MapApp extends Component {
 
         <aside className={activeClass}>
           <label className="search-label" htmlFor="search">
+          Search Locations: <br/>
             <input
               id="search"
               type="text"
@@ -165,20 +166,16 @@ export class MapApp extends Component {
             />
           </label>
 
-          <nav className="location-list" role="list">
-            {this.state.items.map(item => {
-              return (
-                <a
-                  className="nav-item"
-                  key={item.venue.id}
-                  tabIndex="0"
-                  role="listitem"
-                  onClick={e => this.onListClick(e.target)}
-                >
-                  {item.venue.name}
-                </a>
-              );
-            })}
+          <nav className="location-list">
+            <ul>
+              {this.state.items.map(item => {
+                return <li key={item.venue.id}>
+                    <a className="nav-item" tabIndex="0" role="button" onClick={e => this.onListClick(e.target)}>
+                      {item.venue.name}
+                    </a>
+                  </li>;
+              })}
+            </ul>
           </nav>
         </aside>
 
