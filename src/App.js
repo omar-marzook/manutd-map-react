@@ -20,6 +20,7 @@ export class MapApp extends Component {
     };
   }
 
+  // `classList.toggle` showed Errors so Used 'classnames' to handle it & Burger Menu `aria-expanded` handling
   toggleMenu = () => {
     if (
       this.state.active === false &&
@@ -51,23 +52,28 @@ export class MapApp extends Component {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error("FourSquare API can't load");
+          // When FourSquare API fails >> alert
+          alert("FourSquare API can't load!");
         }
       })
       .then(res => {
-        console.log(res);
         this.setState({
           items: res.response.groups[0].items
         });
-        console.log(this.state.items);
       })
-      .catch(error => console.log("Error! " + error));
+      // When Response error >> alert and console
+      .catch(error => {
+        console.log("Error! " + error);
+        alert("Error! " + error);
+      });
 
+    // When Google Maps API fails >> alert
     window.gm_authFailure = () => {
-      alert("Error loading Google Maps!");
+      alert("Error loading Google Maps, Check The API Key!");
     };
   }
 
+  // When click on Marker: Open InfoWindow
   onMarkerClick = (props, marker) =>
     this.setState({
       selectedPlace: props,
@@ -75,6 +81,7 @@ export class MapApp extends Component {
       showingInfoWindow: true
     });
 
+  // When click on Map: Close active InfoWindow
   onMapClicked = props => {
     if (this.state.showingInfoWindow) {
       this.setState({
@@ -84,6 +91,7 @@ export class MapApp extends Component {
     }
   };
 
+  // When Click On Side Nav Location
   onListClick = e => {
     let markers = [...document.querySelectorAll(".gmnoprint map area")];
     // let markers = [...document.querySelectorAll(".gmnoprint")];
@@ -92,6 +100,7 @@ export class MapApp extends Component {
     click.click();
   };
 
+  // Search filtering locations
   filterList = () => {
     let input, inputVal, a, i, filtered, markerPin, filteredPin, filteredMarker;
     input = document.querySelector("#search");
@@ -125,6 +134,7 @@ export class MapApp extends Component {
 
   render() {
     const style = { width: "100%", height: "100%" };
+    // `classList.toggle` showed Errors so Used 'classnames' to handle it
     let activeClass = classnames("nav-section ", {
       active: this.state.active
     });
@@ -154,7 +164,7 @@ export class MapApp extends Component {
 
         <aside className={activeClass}>
           <label className="search-label" htmlFor="search">
-          Search Locations: <br/>
+            Search Locations: <br />
             <input
               id="search"
               type="text"
@@ -169,11 +179,18 @@ export class MapApp extends Component {
           <nav className="location-list">
             <ul>
               {this.state.items.map(item => {
-                return <li key={item.venue.id}>
-                    <a className="nav-item" tabIndex="0" role="button" onClick={e => this.onListClick(e.target)}>
+                return (
+                  <li key={item.venue.id}>
+                    <a
+                      className="nav-item"
+                      tabIndex="0"
+                      role="button"
+                      onClick={e => this.onListClick(e.target)}
+                    >
                       {item.venue.name}
                     </a>
-                  </li>;
+                  </li>
+                );
               })}
             </ul>
           </nav>
@@ -188,6 +205,7 @@ export class MapApp extends Component {
             zoom={16}
             onClick={this.onMapClicked}
           >
+            {/* Create Location List Markers from fetched API data */}
             {this.state.items.map(item => {
               return (
                 <Marker
