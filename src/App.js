@@ -204,6 +204,7 @@ export class MapApp extends Component {
             initialCenter={{ lat: 53.4631, lng: -2.29139 }}
             zoom={16}
             onClick={this.onMapClicked}
+            role="application"
           >
             {/* Create Location List Markers from fetched API data */}
             {this.state.items.map(item => {

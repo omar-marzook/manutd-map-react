@@ -2,16 +2,21 @@
 
 This is the final project for the Udacity Front End Development Nanodegree. Build with React, Third-Part API and The Data Fetch API by FourSquare API.
 
+The App shows some of **Manchester United** venus marked on the Map with InfoWinow to preview some information when clicked. There's a searchbar for filtring the venus by name.
 # How to run the App?
 
 * Clone this repo to a directory of your choosing using git clone
 * Using a terminal:
-* `npm install`
-* `npm start`
+ `npm install`
+ `npm start`
+* To run in production mode
+`npm run build`
+`serve -s build`
+Then navigate to http://localhost:5000
 
 # Build With
 * React
-* google-maps-React
+* google-maps-react
 * FourSquare API
 * classnames
 
