@@ -138,11 +138,17 @@ export class MapApp extends Component {
       full: this.state.full
     });
 
-    return <div>
+    return (
+      <div>
         <header className="header-bar" role="banner">
           {/* Burger Menu */}
           <nav className="buttonNav" role="presentation">
-            <button className={"toggleButton"} aria-controls="menu" aria-expanded={this.state.ariaExpanded} onClick={this.toggleMenu.bind(this)}>
+            <button
+              className={"toggleButton"}
+              aria-controls="menu"
+              aria-expanded={this.state.ariaExpanded}
+              onClick={this.toggleMenu.bind(this)}
+            >
               <span />
               <span />
               <span />
@@ -152,24 +158,63 @@ export class MapApp extends Component {
           <h1>Manchester United Map</h1>
         </header>
 
-        <SideBar items={this.state.items} onListClick={this.onListClick} filterList={this.filterList} activeClass={activeClass} />
+        <SideBar
+          items={this.state.items}
+          onListClick={this.onListClick}
+          filterList={this.filterList}
+          activeClass={activeClass}
+        />
 
-        <div className={fullClass} aria-label="Google Map" aria-hidden="true">
-          <Map google={this.props.google} style={style} styles={mapStyle} initialCenter={{ lat: 53.4631, lng: -2.29139 }} zoom={16} onClick={this.onMapClicked} role="application">
+        <div className={fullClass} aria-label="Google Map" role="application">
+          <Map
+            google={this.props.google}
+            style={style}
+            styles={mapStyle}
+            initialCenter={{ lat: 53.4631, lng: -2.29139 }}
+            zoom={16}
+            onClick={this.onMapClicked}
+            aria-hidden="true"
+          >
             {/* Create Location List of Markers from fetching API data */}
             {this.state.items.map(item => {
-              return <Marker name={item.venue.name} title={item.venue.name} key={item.venue.name} address={item.venue.location.formattedAddress} className="marker-pin" position={{ lat: item.venue.location.lat, lng: item.venue.location.lng }} animation={this.state.activeMarker ? (this.state.activeMarker.name === item.venue.name ? "1" : "0") : "0"} onClick={this.onMarkerClick} />;
+              return (
+                <Marker
+                  name={item.venue.name}
+                  title={item.venue.name}
+                  key={item.venue.name}
+                  address={item.venue.location.formattedAddress}
+                  className="marker-pin"
+                  position={{
+                    lat: item.venue.location.lat,
+                    lng: item.venue.location.lng
+                  }}
+                  animation={
+                    this.state.activeMarker
+                      ? this.state.activeMarker.name === item.venue.name
+                        ? "1"
+                        : "0"
+                      : "0"
+                  }
+                  onClick={this.onMarkerClick}
+                />
+              );
             })}
 
-            <InfoWindow marker={this.state.activeMarker} visible={this.state.showingInfoWindow}>
+            <InfoWindow
+              tabIndex="0"
+              aria-label="Info window"
+              marker={this.state.activeMarker}
+              visible={this.state.showingInfoWindow}
+            >
               <div>
-                <h4>{this.state.selectedPlace.name}</h4>
-                <p>{this.state.selectedPlace.address}</p>
+                <h4 tabIndex="0">{this.state.selectedPlace.name}</h4>
+                <p tabIndex="0">{this.state.selectedPlace.address}</p>
               </div>
             </InfoWindow>
           </Map>
         </div>
-      </div>;
+      </div>
+    );
   }
 }
 

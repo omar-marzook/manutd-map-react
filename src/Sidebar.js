@@ -27,6 +27,7 @@ export class Sidebar extends Component {
                     tabIndex="0"
                     role="button"
                     onClick={e => this.props.onListClick(e.target)}
+                    onKeyPress={e => this.props.onListClick(e.target)}
                   >
                     {item.venue.name}
                   </a>
