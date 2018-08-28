@@ -17,7 +17,9 @@ export class MapApp extends Component {
       markers: [],
       active: false,
       full: true,
-      ariaExpanded: false
+      ariaExpanded: false,
+      queryItems: [],
+      filteredItems: []
     };
   }
 
@@ -66,6 +68,8 @@ export class MapApp extends Component {
       .then(res => {
         this.setState({
           items: res.response.groups[0].items,
+          queryItems: res.response.groups[0].items,
+          filteredItems: res.response.groups[0].items,
           isLoading: false
         });
       })
@@ -137,6 +141,34 @@ export class MapApp extends Component {
     }
   };
 
+  filteredMarkers = () => {
+    let input = document.querySelector("#search");
+    let inputVal = input.value.toLowerCase();
+
+    for (let i = 0; i < this.state.queryItems.length; i++) {
+      let item = this.state.queryItems[i];
+      console.log(this.state.filteredItems);
+
+      if (inputVal === "") {
+        this.setState({
+          filteredItems: [...this.state.items]
+        }, () => this.forceUpdate());
+
+      }  else if (item.venue.name.toLowerCase().indexOf(inputVal) > -1) {
+      // } else if (item.venue.name.toLowerCase() === inputVal) {
+        this.setState({
+          filteredItems: [...this.state.filteredItems, item]
+        });
+
+      } else {
+        // this.setState({ filteredItems: [...this.state.filteredItems] });
+        this.setState({
+          filteredItems: [...this.state.filteredItems.splice(i, 1)]
+        });
+      }
+    }
+  };
+
   render() {
     const style = { width: "100%", height: "100%" };
     // `classList.toggle` showed Errors so Used 'classnames' to handle it
@@ -155,6 +187,7 @@ export class MapApp extends Component {
       return <p>Loading ...</p>;
     }
 
+
     return (
       <div>
         <header className="header-bar" role="banner">
@@ -165,6 +198,7 @@ export class MapApp extends Component {
               aria-controls="menu"
               aria-expanded={this.state.ariaExpanded}
               onClick={this.toggleMenu.bind(this)}
+              aria-label="BurgerMenu to open Locations list"
             >
               <span />
               <span />
@@ -179,6 +213,7 @@ export class MapApp extends Component {
           items={this.state.items}
           onListClick={this.onListClick}
           filterList={this.filterList}
+          filteredMarkers={this.filteredMarkers}
           activeClass={activeClass}
         />
 
@@ -193,12 +228,12 @@ export class MapApp extends Component {
             aria-hidden="true"
           >
             {/* Create Location List of Markers from fetching API data */}
-            {this.state.items.map(item => {
+            {this.state.filteredItems.map(item => {
               return (
                 <Marker
                   name={item.venue.name}
                   title={item.venue.name}
-                  key={item.venue.name}
+                  key={item.venue.id + Math.random() * 0.17}
                   address={item.venue.location.formattedAddress}
                   className="marker-pin"
                   position={{
