@@ -42,6 +42,12 @@ export class MapApp extends Component {
     }
   };
 
+  gm_authFailure() {
+    document.querySelector("body").innerText =
+      "Error loading Google Maps, Check The API Key!";
+    alert("Error loading Google Maps, Check The API Key!");
+  }
+
   componentDidMount() {
     fetch(
       "https://api.foursquare.com/v2/venues/explore?client_id=GOCZGJUBBXCSCUFF4QTUIH0FTXP35RXALJOFHL22DHVBGR5Q&client_secret=WKSOXP1FDMQI2V4P552VEVYO2XBPKQVKA114NUYFTBFWXH2P&v=20180323&limit=6&ll=53.4631,-2.291398&query=Manchester United",
@@ -59,19 +65,22 @@ export class MapApp extends Component {
       })
       .then(res => {
         this.setState({
-          items: res.response.groups[0].items
+          items: res.response.groups[0].items,
+          isLoading: false
         });
       })
       // When Response error >> alert and console
       .catch(error => {
+        this.setState({ error, isLoading: false });
         console.log("Error! " + error);
         alert("Error! " + error);
       });
 
     // When Google Maps API fails >> alert
-    window.gm_authFailure = () => {
-      alert("Error loading Google Maps, Check The API Key!");
-    };
+    // window.gm_authFailure = () => {
+    //   alert("Error loading Google Maps, Check The API Key!");
+    // };
+    window.gm_authFailure = this.gm_authFailure.bind(this);
   }
 
   // When click on Marker: Open InfoWindow
@@ -138,11 +147,25 @@ export class MapApp extends Component {
       full: this.state.full
     });
 
-    return <div>
+    const { isLoading, error } = this.state;
+    if (error) {
+      return <p>{error.message}</p>;
+    }
+    if (isLoading) {
+      return <p>Loading ...</p>;
+    }
+
+    return (
+      <div>
         <header className="header-bar" role="banner">
           {/* Burger Menu */}
           <nav className="buttonNav" role="presentation">
-            <button className={"toggleButton"} aria-controls="menu" aria-expanded={this.state.ariaExpanded} onClick={this.toggleMenu.bind(this)}>
+            <button
+              className={"toggleButton"}
+              aria-controls="menu"
+              aria-expanded={this.state.ariaExpanded}
+              onClick={this.toggleMenu.bind(this)}
+            >
               <span />
               <span />
               <span />
@@ -152,16 +175,54 @@ export class MapApp extends Component {
           <h1>Manchester United Map</h1>
         </header>
 
-        <SideBar items={this.state.items} onListClick={this.onListClick} filterList={this.filterList} activeClass={activeClass} />
+        <SideBar
+          items={this.state.items}
+          onListClick={this.onListClick}
+          filterList={this.filterList}
+          activeClass={activeClass}
+        />
 
         <div className={fullClass} aria-label="Google Map" role="application">
-          <Map google={this.props.google} style={style} styles={mapStyle} initialCenter={{ lat: 53.4631, lng: -2.29139 }} zoom={16} onClick={this.onMapClicked} aria-hidden="true">
+          <Map
+            google={this.props.google}
+            style={style}
+            styles={mapStyle}
+            initialCenter={{ lat: 53.4631, lng: -2.29139 }}
+            zoom={16}
+            onClick={this.onMapClicked}
+            aria-hidden="true"
+          >
             {/* Create Location List of Markers from fetching API data */}
             {this.state.items.map(item => {
-              return <Marker name={item.venue.name} title={item.venue.name} key={item.venue.name} address={item.venue.location.formattedAddress} className="marker-pin" position={{ lat: item.venue.location.lat, lng: item.venue.location.lng }} animation={this.state.activeMarker ? (this.state.activeMarker.name === item.venue.name ? "1" : "0") : "0"} onClick={this.onMarkerClick} />;
+              return (
+                <Marker
+                  name={item.venue.name}
+                  title={item.venue.name}
+                  key={item.venue.name}
+                  address={item.venue.location.formattedAddress}
+                  className="marker-pin"
+                  position={{
+                    lat: item.venue.location.lat,
+                    lng: item.venue.location.lng
+                  }}
+                  animation={
+                    this.state.activeMarker
+                      ? this.state.activeMarker.name === item.venue.name
+                        ? "1"
+                        : "0"
+                      : "0"
+                  }
+                  onClick={this.onMarkerClick}
+                />
+              );
             })}
 
-            <InfoWindow tabIndex="0" aria-label="Info window" marker={this.state.activeMarker} visible={this.state.showingInfoWindow}>
+            <InfoWindow
+              tabIndex="0"
+              aria-label="Info window"
+              marker={this.state.activeMarker}
+              visible={this.state.showingInfoWindow}
+            >
               <div tabIndex="1">
                 <h4 tabIndex="1">{this.state.selectedPlace.name}</h4>
                 <p tabIndex="1">{this.state.selectedPlace.address}</p>
@@ -169,11 +230,21 @@ export class MapApp extends Component {
             </InfoWindow>
           </Map>
         </div>
-      </div>;
+      </div>
+    );
   }
 }
 
-export default GoogleApiWrapper({
-  apiKey: "AIzaSyDr2mpFQ0YiKrf8bW71BurYN_QIl6uylys",
-  v: "3.30"
-})(MapApp);
+export default GoogleApiWrapper(
+  {
+    apiKey: "AIzaSyDr2mpFQ0YiKrf8bW71BurYN_QIl6uylys",
+    v: "3.30"
+  },
+  window.addEventListener("unhandledrejection", event => {
+    console.warn(
+      "WARNING: Unhandled promise rejection. Shame on you! Reason: " +
+        event.reason
+    );
+    document.querySelector("body").innerHTML = "The Google Map didn't load!";
+  })
+)(MapApp);
