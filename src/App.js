@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import classnames from "classnames";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import escapeRegExp from "escape-string-regexp";
 import "./index.css";
 import SideBar from "./Sidebar.js";
 import mapStyle from "./map-style.json";
@@ -17,9 +18,10 @@ export class MapApp extends Component {
       markers: [],
       active: false,
       full: true,
+      isLoading: false,
       ariaExpanded: false,
       queryItems: [],
-      filteredItems: []
+      error: null
     };
   }
 
@@ -69,7 +71,6 @@ export class MapApp extends Component {
         this.setState({
           items: res.response.groups[0].items,
           queryItems: res.response.groups[0].items,
-          filteredItems: res.response.groups[0].items,
           isLoading: false
         });
       })
@@ -80,23 +81,23 @@ export class MapApp extends Component {
         alert("Error! " + error);
       });
 
-    // When Google Maps API fails >> alert
-    // window.gm_authFailure = () => {
-    //   alert("Error loading Google Maps, Check The API Key!");
-    // };
     window.gm_authFailure = this.gm_authFailure.bind(this);
   }
 
+  createMarkers = marker => {
+    if (marker !== null) this.state.markers.push(marker);
+  };
+
   // When click on Marker: Open InfoWindow
-  onMarkerClick = (props, marker) =>
+  onMarkerClick = (props, items) =>
     this.setState({
       selectedPlace: props,
-      activeMarker: marker,
+      activeMarker: items,
       showingInfoWindow: true
     });
 
   // When click on Map: Close active InfoWindow
-  onMapClicked = props => {
+  onMapClicked = () => {
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
@@ -124,7 +125,7 @@ export class MapApp extends Component {
   };
 
   // Search filtering locations
-  filterList = () => {
+  filterList = query => {
     let input, inputVal, a, i, filtered;
     input = document.querySelector("#search");
     inputVal = input.value.toLowerCase();
@@ -139,34 +140,7 @@ export class MapApp extends Component {
         filtered.style.display = "none";
       }
     }
-  };
-
-  filteredMarkers = () => {
-    let input = document.querySelector("#search");
-    let inputVal = input.value.toLowerCase();
-
-    for (let i = 0; i < this.state.queryItems.length; i++) {
-      let item = this.state.queryItems[i];
-      console.log(this.state.filteredItems);
-
-      if (inputVal === "") {
-        this.setState({
-          filteredItems: [...this.state.items]
-        }, () => this.forceUpdate());
-
-      }  else if (item.venue.name.toLowerCase().indexOf(inputVal) > -1) {
-      // } else if (item.venue.name.toLowerCase() === inputVal) {
-        this.setState({
-          filteredItems: [...this.state.filteredItems, item]
-        });
-
-      } else {
-        // this.setState({ filteredItems: [...this.state.filteredItems] });
-        this.setState({
-          filteredItems: [...this.state.filteredItems.splice(i, 1)]
-        });
-      }
-    }
+    this.setState({ query: query });
   };
 
   render() {
@@ -187,6 +161,13 @@ export class MapApp extends Component {
       return <p>Loading ...</p>;
     }
 
+    let queryItems;
+    if (this.state.query) {
+      const match = new RegExp(escapeRegExp(this.state.query), "i");
+      queryItems = this.state.items.filter(item => match.test(item.venue.name));
+    } else {
+      queryItems = this.state.items;
+    }
 
     return (
       <div>
@@ -213,8 +194,9 @@ export class MapApp extends Component {
           items={this.state.items}
           onListClick={this.onListClick}
           filterList={this.filterList}
-          filteredMarkers={this.filteredMarkers}
+          queryItems={this.state.queryItems}
           activeClass={activeClass}
+          query={this.state.query}
         />
 
         <div className={fullClass} aria-label="Google Map" role="application">
@@ -228,13 +210,14 @@ export class MapApp extends Component {
             aria-hidden="true"
           >
             {/* Create Location List of Markers from fetching API data */}
-            {this.state.filteredItems.map(item => {
+            {queryItems.map(item => {
               return (
                 <Marker
                   name={item.venue.name}
+                  ref={this.state.createMarkers}
                   title={item.venue.name}
                   key={item.venue.id + Math.random() * 0.17}
-                  address={item.venue.location.formattedAddress}
+                  address={item.venue.location.formattedAddress.join(", ")}
                   className="marker-pin"
                   position={{
                     lat: item.venue.location.lat,
@@ -280,6 +263,6 @@ export default GoogleApiWrapper(
       "WARNING: Unhandled promise rejection. Shame on you! Reason: " +
         event.reason
     );
-    document.querySelector("body").innerHTML = "The Google Map didn't load!";
+    document.querySelector("body").innerHTML = "The Google Maps didn't load!";
   })
 )(MapApp);
