@@ -12,11 +12,8 @@ export class Sidebar extends Component {
             name="search"
             aria-label="Search"
             placeholder="Search Location"
-            value={this.props.value}
-            onChange={() => {
-              this.props.filterList();
-              this.props.filteredMarkers();
-            }}
+            value={this.props.query}
+            onChange={e => this.props.filterList(e.target.value)}
           />
         </label>
 
