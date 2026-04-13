@@ -6,6 +6,9 @@ import "./index.css";
 import SideBar from "./Sidebar.js";
 import mapStyle from "./map-style.json";
 
+const foursquareID = process.env.REACT_APP_FOURSQUARE_ID;
+const foursquareSecret = process.env.REACT_APP_FOURSQUARE_SECRET;
+
 export class MapApp extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +57,7 @@ export class MapApp extends Component {
 
   componentDidMount() {
     fetch(
-      "https://api.foursquare.com/v2/venues/explore?client_id=REPLACED_FS_ID&client_secret=REPLACED_FS_SECRET&v=20180323&limit=6&ll=53.4631,-2.291398&query=Manchester United",
+      `https://api.foursquare.com/v2/venues/explore?client_id=${foursquareID}&client_secret=${foursquareSecret}&v=20180323&limit=6&ll=53.4631,-2.291398&query=Manchester United`,
       {
         method: "GET"
       }
@@ -253,9 +256,11 @@ export class MapApp extends Component {
   }
 }
 
+const googleKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
 export default GoogleApiWrapper(
   {
-    apiKey: "REPLACED_GOOGLE_KEY",
+    apiKey: googleKey,
     v: "3.30"
   },
   window.addEventListener("unhandledrejection", event => {
